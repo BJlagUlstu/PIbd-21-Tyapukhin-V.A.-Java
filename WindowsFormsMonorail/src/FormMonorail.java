@@ -10,8 +10,8 @@ import javax.swing.JButton;
 public class FormMonorail {
 
 	private JFrame frame;
-	private Monorail monorail;
 	private PanelMonorail panel;
+	private ITransport train;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -45,7 +45,7 @@ public class FormMonorail {
 		buttonRight.setFocusPainted(false);
 		buttonRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				monorail.MoveTransport(Direction.Right);
+				train.MoveTransport(Direction.Right);
 				panel.repaint();
 			}
 		});
@@ -60,7 +60,7 @@ public class FormMonorail {
 		buttonDown.setFocusPainted(false);
 		buttonDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				monorail.MoveTransport(Direction.Down);
+				train.MoveTransport(Direction.Down);
 				panel.repaint();
 			}
 		});
@@ -75,7 +75,7 @@ public class FormMonorail {
 		buttonUp.setFocusPainted(false);
 		buttonUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				monorail.MoveTransport(Direction.Up);
+				train.MoveTransport(Direction.Up);
 				panel.repaint();
 			}
 		});
@@ -90,28 +90,44 @@ public class FormMonorail {
 		buttonLeft.setFocusPainted(false);
 		buttonLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				monorail.MoveTransport(Direction.Left);
+				train.MoveTransport(Direction.Left);
 				panel.repaint();
 			}
 		});
 		buttonLeft.setBounds(992, 589, 50, 50);
 		frame.getContentPane().add(buttonLeft);
 
-		JButton buttonCreate = new JButton("Create");
-		buttonCreate.setFocusPainted(false);
-		buttonCreate.setContentAreaFilled(false);
-		buttonCreate.addActionListener(new ActionListener() {
+		JButton buttonCreateTrain = new JButton("Create Train");
+		buttonCreateTrain.setFocusPainted(false);
+		buttonCreateTrain.setContentAreaFilled(false);
+		buttonCreateTrain.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				monorail = new Monorail((int)(150 + Math.random() * 150), (float)(1500 + Math.random() * 500), Color.WHITE,
-						Color.CYAN, true, true, true);
-				monorail.SetPosition((int)(50 + Math.random() * 50), (int)(50 + Math.random() * 50), 1185, 485);
-				panel = new PanelMonorail(monorail);
+				train = new Train((int)(150 + Math.random() * 150), (float)(1500 + Math.random() * 500), Color.WHITE);
+				train.SetPosition((int)(50 + Math.random() * 50), (int)(50 + Math.random() * 50), 1185, 485);
+				panel = new PanelMonorail(train);
 				panel.setBounds(0, 40, 1185, 485);
 				frame.getContentPane().add(panel);
 				panel.repaint();
 			}
 		});
-		buttonCreate.setBounds(10, 11, 90, 25);
-		frame.getContentPane().add(buttonCreate);
+		buttonCreateTrain.setBounds(20, 11, 130, 25);
+		frame.getContentPane().add(buttonCreateTrain);
+		
+		JButton btnCreateMonorail = new JButton("Create Monorail");
+		btnCreateMonorail.setFocusPainted(false);
+		btnCreateMonorail.setContentAreaFilled(false);
+		btnCreateMonorail.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				train = new Monorail((int)(150 + Math.random() * 150), (float)(1500 + Math.random() * 500), Color.WHITE,
+						Color.RED, true, true, true);
+				train.SetPosition((int)(50 + Math.random() * 50), (int)(50 + Math.random() * 50), 1185, 485);
+				panel = new PanelMonorail(train);
+				panel.setBounds(0, 40, 1185, 485);
+				frame.getContentPane().add(panel);
+				panel.repaint();
+			}
+		});
+		btnCreateMonorail.setBounds(171, 11, 130, 25);
+		frame.getContentPane().add(btnCreateMonorail);
 	}
 }
