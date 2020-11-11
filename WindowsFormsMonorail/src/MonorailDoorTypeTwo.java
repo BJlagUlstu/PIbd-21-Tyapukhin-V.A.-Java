@@ -1,65 +1,66 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
-public class MonorailDoor implements IDoor {
+public class MonorailDoorTypeTwo implements IDoor {
 
 	private static Door door;
-
+	
 	private int _startPosX;
 
 	private int _startPosY;
 
-	public Color DopColor = Color.GREEN;
+	public Color DopColor = Color.PINK;
 	
-	MonorailDoor(Color dopcolor, int count) {
+	MonorailDoorTypeTwo(Color dopcolor, int count) {
 
 		DopColor = dopcolor;
 		countDoor(count);
 	}
 	
-	MonorailDoor(int count) {
+	MonorailDoorTypeTwo(int count) {
 
 		countDoor(count);
 	}
 
 	public void DrawDoor(Graphics g) {
 
-		g.setColor(DopColor);
+		g.setColor(Color.BLACK);
 
 		switch (door) {
 
 		case number_1: {
 
-			g.fillRect(_startPosX + 120, _startPosY + 5, 12, 20);
-			g.setColor(Color.BLACK);
+			g.fillRect(_startPosX + 120, _startPosY + 5, 12, 32);
 			g.drawRect(_startPosX + 120, _startPosY + 5, 12, 32);
-			g.fillRect(_startPosX + 120, _startPosY + 25, 12, 12);
+			g.setColor(DopColor);
+			g.fillOval(_startPosX + 121, _startPosY + 6, 10, 19);
 		}
 		break;
 
 		case number_2: {
-			g.fillRect(_startPosX + 112, _startPosY + 5, 12, 20);
-			g.fillRect( _startPosX + 130, _startPosY + 5, 12, 20);
-			g.setColor(Color.BLACK);
+			
+			g.fillRect(_startPosX + 112, _startPosY + 5, 12, 32);
+			g.fillRect( _startPosX + 130, _startPosY + 5, 12, 32);
 			g.drawRect(_startPosX + 112, _startPosY + 5, 12, 32);
 			g.drawRect(_startPosX + 130, _startPosY + 5, 12, 32);
-			g.fillRect(_startPosX + 112, _startPosY + 25, 12, 12);
-			g.fillRect(_startPosX + 130, _startPosY + 25, 12, 12);
+			g.setColor(DopColor);
+			g.fillOval(_startPosX + 113, _startPosY + 6, 10, 19);
+			g.fillOval( _startPosX + 131, _startPosY + 6, 10, 19);
 		}
 		break;
 
 		case number_3: {	
 			
-			g.fillRect(_startPosX + 120, _startPosY + 5, 12, 20);
-			g.fillRect(_startPosX + 102, _startPosY + 5, 12, 20);
-			g.fillRect(_startPosX + 138, _startPosY + 5, 12, 20);
-			g.setColor(Color.BLACK);
+			g.fillRect(_startPosX + 120, _startPosY + 5, 12, 32);
+			g.fillRect(_startPosX + 102, _startPosY + 5, 12, 32);
+			g.fillRect(_startPosX + 138, _startPosY + 5, 12, 32);
 			g.drawRect(_startPosX + 102, _startPosY + 5, 12, 32);
 			g.drawRect(_startPosX + 138, _startPosY + 5, 12, 32);
 			g.drawRect(_startPosX + 120, _startPosY + 5, 12, 32);
-			g.fillRect(_startPosX + 102, _startPosY + 25, 12, 12);
-			g.fillRect(_startPosX + 138, _startPosY + 25, 12, 12);
-			g.fillRect(_startPosX + 120, _startPosY + 25, 12, 12);
+			g.setColor(DopColor);
+			g.fillOval(_startPosX + 121, _startPosY + 6, 10, 19);
+			g.fillOval(_startPosX + 103, _startPosY + 6, 10, 19);
+			g.fillOval(_startPosX + 139, _startPosY + 6, 10, 19);
 		}
 		break;
 		}
@@ -85,4 +86,5 @@ public class MonorailDoor implements IDoor {
 		_startPosX = x;
 		_startPosY = y;
 	}
+
 }

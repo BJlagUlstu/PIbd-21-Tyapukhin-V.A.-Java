@@ -6,9 +6,9 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class PanelMonorail extends JPanel {
 	
-    Monorail monorail;
+	ITransport monorail;
 
-    public PanelMonorail(Monorail monorail) {
+    public PanelMonorail(ITransport monorail) {
     	
         this.monorail = monorail;
     }
