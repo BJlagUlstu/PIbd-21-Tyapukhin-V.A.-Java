@@ -3,7 +3,7 @@ import java.awt.Graphics;
 
 public class MonorailDoor implements IDoor {
 
-	private static Door door;
+	private Door door;
 
 	private int _startPosX;
 
