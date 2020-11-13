@@ -6,16 +6,17 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class PanelDepot extends JPanel {
 	
-	Depot<ITransport, IDoor> depot;
-	
-	PanelDepot(Depot<ITransport, IDoor> depot) {
-		
-		this.depot = depot;
-	}
+	Depot<Vehicle, IDoor> depot;
   
     public void paint(Graphics g)  {
     	
         super.paint(g);
-        depot.Draw(g);
+        if (depot != null) {
+        	depot.Draw(g);
+        }
+    }
+    
+    public void setDepot(Depot<Vehicle, IDoor> depot) {
+    	this.depot = depot;
     }
 }

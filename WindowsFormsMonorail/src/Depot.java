@@ -1,9 +1,10 @@
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Depot <T extends ITransport, D extends IDoor> {
 
-	private ArrayList<T> _places;
+	private List<T> _places;
 
     private final int pictureWidth;
 
@@ -12,35 +13,34 @@ public class Depot <T extends ITransport, D extends IDoor> {
     private final int _placeSizeWidth = 380;
 
     private final int _placeSizeHeight = 100;
+    
+    private int _maxCount;
 
     public Depot(int picWidth, int picHeight) {
     	int columns = picWidth / _placeSizeWidth;
     	int rows = picHeight / _placeSizeHeight;
+    	_maxCount = columns * rows;
         pictureWidth = picWidth;
         pictureHeight = picHeight;
-        _places = new ArrayList<>();
-        for (int i = 0; i < columns * rows; i++) {
-            _places.add(null);
-        }
+        _places = new ArrayList<T>();
     }
 
     public boolean operatorAdd(T train) {
-    	for (int i = 0; i < _places.size(); i++) {
-    		if (_places.get(i) == null) {
-                int x = i / (pictureHeight / _placeSizeHeight);
-                int y = i - x * (pictureHeight / _placeSizeHeight);
-                train.SetPosition(x * _placeSizeWidth + 15, y * _placeSizeHeight + 25, pictureWidth, pictureHeight);
-                _places.set(i, train);
-                return true;
-            }
-        }
-        return false;
+    	if (_places.size() >= _maxCount)
+            return false;
+
+    	
+        _places.add(train);
+        int x = (_places.size() - 1) / (pictureHeight / _placeSizeHeight);
+        int y = (_places.size() - 1) - x * (pictureHeight / _placeSizeHeight);
+        train.SetPosition(x * _placeSizeWidth + 15, y * _placeSizeHeight + 25, pictureWidth, pictureHeight);
+        return true;
     }
 
     public T operatorSub(int index) {
-        if (index < 0 || index > _places.size() - 1)
+        if (index < 0 || index >= _places.size())
             return null;
-
+        
         if (_places.get(index) == null)
             return null;
 
@@ -61,6 +61,13 @@ public class Depot <T extends ITransport, D extends IDoor> {
 
     public boolean lessOrEqual(int number) {
         return !moreOrEqual(number);
+    }
+    
+    public T get(int index) {
+        if (index < 0 || index > _places.size() - 1) {
+            return null;
+        }
+        return _places.get(index);
     }
     
     public void Draw(Graphics g) {
