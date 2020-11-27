@@ -10,16 +10,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
 import javax.swing.JList;
 
 public class FormDepot {
 
     private static JFrame frame;
     private PanelDepot panelDepot;
-    private JPanel colorPanel;
     private JTextField textFieldNumberPlace;
     private DepotCollection depotCollection;
     private JList<String> listDepot;
@@ -47,12 +46,16 @@ public class FormDepot {
     public static void setEnabled() {
     	frame.setEnabled(true);
     }
+    
+    public void setVisible() {
+        frame.setVisible(true);
+    }
 
     private void initialize() {
  
         frame = new JFrame();
         frame.setBounds(100, 100, 1250, 700);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         frame.getContentPane().setLayout(null);
         
         panelDepot = new PanelDepot();
@@ -106,46 +109,19 @@ public class FormDepot {
         btnDeleteDepot.setBounds(1076, 274, 130, 25);
         frame.getContentPane().add(btnDeleteDepot);
 
-        JButton buttonParkTrain = new JButton("Park Train");
+        JButton buttonParkTrain = new JButton("Park Transport");
         buttonParkTrain.setFocusPainted(false);
         buttonParkTrain.setContentAreaFilled(false);
         buttonParkTrain.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Color mainColor = JColorChooser.showDialog(colorPanel, "Panel colors", Color.GREEN);
-                if(mainColor != null) {
-                	var train = new Train(200, 1750, mainColor);
-                    if (depotCollection.get(listDepotModel.get(listDepot.getSelectedIndex())).operatorAdd(train)) {
-                        panelDepot.repaint();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Парковка переполнена", "Warning!", JOptionPane.WARNING_MESSAGE);
-                    }
-                }
+                FormTrainConfig formTrainConfig = new FormTrainConfig();
+                formTrainConfig.AddEvent(AddTrain);
+                frame.setEnabled(false);
+            	formTrainConfig.setVisible();
             }
         });
-        buttonParkTrain.setBounds(1076, 322, 130, 25);
+        buttonParkTrain.setBounds(1076, 350, 130, 25);
         frame.getContentPane().add(buttonParkTrain);
-
-        JButton btnParkMonorail = new JButton("Park Monorail");
-        btnParkMonorail.setFocusPainted(false);
-        btnParkMonorail.setContentAreaFilled(false);
-        btnParkMonorail.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-            	Color mainColor = JColorChooser.showDialog(colorPanel, "Panel colors", Color.GREEN);
-            	if(mainColor != null) {
-                    Color dopColor = JColorChooser.showDialog(colorPanel, "Panel colors", Color.GREEN);
-                    if(dopColor != null) {
-                        var train = new Monorail(200, 1750, mainColor, dopColor, true, true, true);
-                        if (depotCollection.get(listDepotModel.get(listDepot.getSelectedIndex())).operatorAdd(train)) {
-                        	panelDepot.repaint();
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Парковка переполнена", "Warning!", JOptionPane.WARNING_MESSAGE);
-                        }
-                    }
-                }
-            }
-        });
-        btnParkMonorail.setBounds(1076, 376, 130, 25);
-        frame.getContentPane().add(btnParkMonorail);
 
         JPanel groupPanelPickUp = new JPanel();
         groupPanelPickUp.setBounds(1076, 420, 130, 150);
@@ -221,4 +197,20 @@ public class FormDepot {
         	listDepot.setSelectedIndex(index);
         }
     }
+    
+    Expression AddTrain = (train) -> {
+        if (train != null && listDepot.getSelectedIndex() > -1) {
+            if (depotCollection.get(listDepotModel.get(listDepot.getSelectedIndex())).operatorAdd(train)) {
+            	panelDepot.repaint();
+            }
+            else {
+            	JOptionPane.showMessageDialog(null, "Парковка переполнена", "Warning!", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+    };
+}
+
+interface Expression {
+	
+	public void AddTrain(Vehicle train);
 }

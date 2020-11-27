@@ -105,7 +105,9 @@ public class Train extends Vehicle {
 		g.drawLine(_startPosX + 203, _startPosY + 5, _startPosX + 203, _startPosY + 25);
 		
 		//doors
-		door.setPositionDoor(_startPosX, _startPosY);
-		door.DrawDoor(g);
+		if(door != null) {		
+			door.setPositionDoor(_startPosX, _startPosY);
+			door.DrawDoor(g);	
+		}
     }
 }

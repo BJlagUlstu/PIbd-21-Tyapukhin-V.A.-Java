@@ -85,4 +85,12 @@ public class MonorailDoor implements IDoor {
 		_startPosX = x;
 		_startPosY = y;
 	}
+	
+	public void setDopColor(Color color) {
+		DopColor = color;
+	}
+	
+	public void setDoorType(Door pickDoor) {
+		door = pickDoor;
+	}
 }

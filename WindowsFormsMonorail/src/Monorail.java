@@ -11,8 +11,21 @@ public class Monorail extends Train {
 	public void setDopColor(Color dopColor) {
 
 		DopColor = dopColor;
+		door.setDopColor(DopColor);
 	}
 
+	public void setDoorType(IDoor pickDoor) {
+		
+		door = pickDoor;
+		door.countDoor(numberOfDoor);
+		door.setDopColor(DopColor);
+	}
+	
+	public void setCountDoor(int count) {
+		
+		door.countDoor(count);
+	}
+	
 	public boolean SportLine;
 
 	public void setSportLine(boolean sportLine) {
@@ -33,7 +46,7 @@ public class Monorail extends Train {
 
 		BottomMonorail = bottomMonorail;
 	}
-
+	
 	Monorail(int maxSpeed, float weight, Color mainColor, Color dopColor, boolean sportLine, boolean headlights, boolean bottomMonorail) {
 		
 		super(maxSpeed, weight, mainColor, 270, 70);
