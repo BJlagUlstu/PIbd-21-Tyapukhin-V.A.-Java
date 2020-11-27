@@ -47,6 +47,8 @@ public class Monorail extends Train {
 		BottomMonorail = bottomMonorail;
 	}
 	
+	int numberOfDoor = 0;
+
 	Monorail(int maxSpeed, float weight, Color mainColor, Color dopColor, boolean sportLine, boolean headlights, boolean bottomMonorail) {
 		
 		super(maxSpeed, weight, mainColor, 270, 70);
@@ -55,9 +57,36 @@ public class Monorail extends Train {
         Headlights = headlights;
         BottomMonorail = bottomMonorail;
         
-        int pickDoor = new Random().nextInt(Door.values().length);
+        numberOfDoor = new Random().nextInt(Door.values().length);
         int rnd = new Random().nextInt(3);
-        choiceOfOrnament(rnd, pickDoor);
+        choiceOfOrnament(rnd, numberOfDoor);
+    }
+	
+    public Monorail(String info) {
+    	
+    	super(info);
+    	String[] strs = info.split(separator);
+        if (strs.length == 9) {
+        	MaxSpeed = Integer.parseInt(strs[0]);
+            Weight = Integer.parseInt(strs[1]);
+            String[] MaincolorRGB = strs[2].split(",");
+            MainColor = new Color(Integer.parseInt(MaincolorRGB[0]), Integer.parseInt(MaincolorRGB[1]), Integer.parseInt(MaincolorRGB[2]));
+            String[] DopcolorRGB = strs[3].split(",");
+            DopColor = new Color(Integer.parseInt(DopcolorRGB[0]), Integer.parseInt(DopcolorRGB[1]), Integer.parseInt(DopcolorRGB[2])); 
+            SportLine = Boolean.parseBoolean(strs[4]);
+            Headlights = Boolean.parseBoolean(strs[5]);
+            BottomMonorail = Boolean.parseBoolean(strs[6]);
+            numberOfDoor = Integer.parseInt(strs[7]);
+            
+            if(strs[8].equals("Usual")) {
+            	choiceOfOrnament(0, numberOfDoor);
+            } else if(strs[8].equals("Subtype 1")) {
+            	choiceOfOrnament(1, numberOfDoor);
+            } else if(strs[8].equals("Subtype 2")) {
+            	choiceOfOrnament(2, numberOfDoor);
+            }
+            setDoorType(door);
+        }
     }
 
 	public void choiceOfOrnament(int number, int pickDoor) {
@@ -111,5 +140,10 @@ public class Monorail extends Train {
 			g2.drawArc(_startPosX + 150, _startPosY + 30, 90, 30, 0, 90);
 			g2.drawLine(_startPosX + 50, _startPosY + 30, _startPosX + 200, _startPosY + 30);	
 		}
+    }
+
+    @Override
+    public String toString() {
+    	return super.toString() + separator + DopColor.getRed() + "," + DopColor.getGreen() + "," + DopColor.getBlue() + separator + SportLine + separator + Headlights + separator + BottomMonorail + separator + numberOfDoor + separator + door;
     }
 }

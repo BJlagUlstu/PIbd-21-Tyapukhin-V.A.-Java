@@ -2,6 +2,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -10,10 +11,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
 public class FormDepot {
 
@@ -180,6 +185,90 @@ public class FormDepot {
         });
         btnLastTransport.setBounds(1076, 580, 130, 25);
         frame.getContentPane().add(btnLastTransport);
+        
+        JMenuBar menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+		
+		JMenu fileMenu = new JMenu("File");
+		menuBar.setBorder(new LineBorder(new Color(0, 0, 0)));   
+		menuBar.add(fileMenu);
+		
+		JMenuItem saveFile = new JMenuItem("Save");
+        saveFile.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	JFileChooser openFile = new JFileChooser();
+                if (openFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    String path = openFile.getSelectedFile().getPath();
+                    try {
+                        if (depotCollection.SaveData(path)) {
+                            JOptionPane.showMessageDialog(null, "Сохранение успешно завершено", "Результат", JOptionPane.WARNING_MESSAGE);
+                        } 
+                    } catch (IOException e) {
+                    	JOptionPane.showMessageDialog(null, "Не удалось сохранить", "Результат", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+        });
+		fileMenu.add(saveFile);
+		
+		JMenuItem uploadFile = new JMenuItem("Upload");
+        uploadFile.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	JFileChooser openFile = new JFileChooser();
+                if (openFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    String path = openFile.getSelectedFile().getPath();
+                    try {
+                        if (depotCollection.LoadData(path)) {
+                            ReloadLevels();
+                            JOptionPane.showMessageDialog(null, "Загрузка успешно завершена", "Результат", JOptionPane.WARNING_MESSAGE);
+                        } 
+                    } catch (IOException e) {
+                    	JOptionPane.showMessageDialog(null, "Не удалось загрузить", "Результат", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+        });
+        fileMenu.addSeparator(); 
+        fileMenu.add(uploadFile);
+        
+        JMenuItem saveOnlyOneDepot = new JMenuItem("Save only one depot");
+        saveOnlyOneDepot.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	JFileChooser openFile = new JFileChooser();
+                if (openFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    String path = openFile.getSelectedFile().getPath();
+                    try {
+                        if (depotCollection.SaveOnlyOneData(path, listDepotModel.get(listDepot.getSelectedIndex()))) {
+                            JOptionPane.showMessageDialog(null, "Сохранение успешно завершено", "Результат", JOptionPane.WARNING_MESSAGE);
+                        } 
+                    } catch (IOException e) {
+                    	JOptionPane.showMessageDialog(null, "Не удалось сохранить", "Результат", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+        });
+        fileMenu.addSeparator(); 
+		fileMenu.add(saveOnlyOneDepot);
+		
+		JMenuItem uploadOnlyOneDepot = new JMenuItem("Upload only one depot");
+		uploadOnlyOneDepot.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+            	JFileChooser openFile = new JFileChooser();
+                if (openFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    String path = openFile.getSelectedFile().getPath();
+                    try {
+                        if (depotCollection.LoadOnlyOneData(path)) {
+                            ReloadLevels();
+                            JOptionPane.showMessageDialog(null, "Загрузка успешно завершена", "Результат", JOptionPane.WARNING_MESSAGE);
+                        } 
+                    } catch (IOException e) {
+                    	JOptionPane.showMessageDialog(null, "Не удалось загрузить", "Результат", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+            }
+        });
+        fileMenu.addSeparator(); 
+        fileMenu.add(uploadOnlyOneDepot);
     }
     
     private void ReloadLevels() {

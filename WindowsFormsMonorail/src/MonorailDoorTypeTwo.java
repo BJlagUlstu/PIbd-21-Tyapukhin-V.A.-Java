@@ -67,7 +67,7 @@ public class MonorailDoorTypeTwo implements IDoor {
 	}
 
 	public void countDoor(int count) {
-
+        
 		switch(count) {
 		
 		case 0:
@@ -93,5 +93,10 @@ public class MonorailDoorTypeTwo implements IDoor {
 	
 	public void setDoorType(Door pickDoor) {
 		door = pickDoor;
+	}
+	
+	@Override
+	public String toString() {
+		return "Subtype 2";
 	}
 }
