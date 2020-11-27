@@ -47,7 +47,7 @@ public abstract class Vehicle implements ITransport {
     		MainColor = mainColor;
     	}
 
-        public void SetPosition(int x, int y, int width, int height)
+        public void SetPosition(int x, int y, int width, int height) 
         {
             _startPosX = x;
             _startPosY = y;
