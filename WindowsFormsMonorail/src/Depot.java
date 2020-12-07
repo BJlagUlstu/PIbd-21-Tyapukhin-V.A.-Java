@@ -87,4 +87,16 @@ public class Depot <T extends ITransport, D extends IDoor> {
             g.drawLine(i * _placeSizeWidth, 0, i * _placeSizeWidth, (pictureHeight / _placeSizeHeight) * _placeSizeHeight);
         }
     }
+    
+    public T GetNext(int index) {
+        if (index < 0 || index >= _places.size())
+        {
+            return null;
+        }
+        return _places.get(index);
+    }
+    
+    public void myClear() {
+    	_places.clear();
+    }
 }
