@@ -10,14 +10,34 @@ public class Train extends Vehicle {
     protected int monorailHeight = 60;
 
     protected final int monorailWidthMagnet = 20;
+    
+    protected final String separator = ";";
 
 	public IDoor door;
+	
+	public void setDoorType(IDoor pickDoor) {
+		
+		door = pickDoor;
+	}
 
     public Train(int maxSpeed, float weight, Color mainColor) {
         MaxSpeed = maxSpeed;
         Weight = weight;
         MainColor = mainColor;
         door = new MonorailDoor(2);
+    }
+    
+    public Train(String info) {
+        String[] strs = info.split(separator);
+        if (strs.length == 3)
+        {
+            MaxSpeed = Integer.parseInt(strs[0]);
+            Weight = Integer.parseInt(strs[1]);
+            String[] MaincolorRGB = strs[2].split(",");
+            MainColor = new Color(Integer.parseInt(MaincolorRGB[0]), Integer.parseInt(MaincolorRGB[1]), Integer.parseInt(MaincolorRGB[2]));
+            door = new MonorailDoor(2);
+            setDoorType(door);
+        }
     }
 
     protected Train(int maxSpeed, float weight, Color mainColor, int monoWidth, int monoHeight) {
@@ -109,5 +129,10 @@ public class Train extends Vehicle {
 			door.setPositionDoor(_startPosX, _startPosY);
 			door.DrawDoor(g);	
 		}
+    }
+    
+    @Override
+    public String toString() {
+    	return MaxSpeed + separator + (int) Weight + separator + MainColor.getRed() + "," + MainColor.getGreen() + "," + MainColor.getBlue();
     }
 }

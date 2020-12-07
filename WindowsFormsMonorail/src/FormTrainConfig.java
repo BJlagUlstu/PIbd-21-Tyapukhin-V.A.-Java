@@ -354,7 +354,7 @@ public class FormTrainConfig {
 	    
 	    JPanel panelDoorTypes = new JPanel();
 	    panelDoorTypes.setBorder(new LineBorder(new Color(0, 0, 0)));
-	    panelDoorTypes.setBounds(715, 10, 105, 270);
+	    panelDoorTypes.setBounds(715, 10, 105, 225);
 	    frame.getContentPane().add(panelDoorTypes);
 	    panelDoorTypes.setLayout(null);
 	    
