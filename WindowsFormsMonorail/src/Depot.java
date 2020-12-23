@@ -25,9 +25,9 @@ public class Depot <T extends ITransport, D extends IDoor> {
         _places = new ArrayList<T>();
     }
 
-    public boolean operatorAdd(T train) {
+    public boolean operatorAdd(T train) throws DepotOverflowException {
     	if (_places.size() >= _maxCount)
-            return false;
+    		throw new DepotOverflowException();
 
     	
         _places.add(train);
@@ -37,9 +37,9 @@ public class Depot <T extends ITransport, D extends IDoor> {
         return true;
     }
 
-    public T operatorSub(int index) {
+    public T operatorSub(int index) throws DepotNotFoundException {
         if (index < 0 || index >= _places.size())
-            return null;
+        	throw new DepotNotFoundException(index);
         
         if (_places.get(index) == null)
             return null;
