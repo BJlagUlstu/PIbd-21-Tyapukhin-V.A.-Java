@@ -3,7 +3,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-public class Train extends Vehicle {
+public class Train extends Vehicle implements Comparable<Train> {
 
 	protected int monorailWidth = 260;
 
@@ -135,4 +135,49 @@ public class Train extends Vehicle {
     public String toString() {
     	return MaxSpeed + separator + (int) Weight + separator + MainColor.getRed() + "," + MainColor.getGreen() + "," + MainColor.getBlue();
     }
+    
+    public boolean Equals(Train other) {
+        if (other == null) {
+            return false;
+        }
+        if (getClass() != other.getClass()) {
+            return false;
+        }
+        if (MaxSpeed != other.MaxSpeed) {
+            return false;
+        }
+        if (Weight != other.Weight) {
+            return false;
+        }
+        if (MainColor != other.MainColor) {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Train)) {
+            return false;
+        } else {
+        	return Equals((Train) obj);
+        }
+    }
+
+	@Override
+	public int compareTo(Train train) {
+		if (this.MaxSpeed != train.MaxSpeed) {
+		    return Integer.compare(this.MaxSpeed, train.MaxSpeed);
+		}
+		if (this.Weight != train.Weight) {
+		    return Integer.compare((int)this.Weight, (int)train.Weight);
+		}
+		if (this.MainColor != train.MainColor) {
+		    return Integer.compare(this.MainColor.getRGB(), train.MainColor.getRGB());
+		}
+		return 0;
+	}
 }

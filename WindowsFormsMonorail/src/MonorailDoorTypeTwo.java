@@ -99,4 +99,27 @@ public class MonorailDoorTypeTwo implements IDoor {
 	public String toString() {
 		return "Subtype 2";
 	}
+	
+	public boolean Equals(IDoor other) {
+	    MonorailDoorTypeTwo currentDoor = (MonorailDoorTypeTwo)(other);
+		if (other == null) {
+	        return false;
+	    }
+	    if (door != (currentDoor).door) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+	    if (obj == null) {
+	        return false;
+	    }
+	    if (!(obj.getClass() == getClass())) {
+	        return false;
+	    } else {
+	        return Equals((IDoor) obj);
+	    }
+	}
 }
