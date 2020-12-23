@@ -15,10 +15,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
+
 import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 public class FormDepot {
 
@@ -29,6 +33,7 @@ public class FormDepot {
     private JList<String> listDepot;
     private final DefaultListModel<String> listDepotModel = new DefaultListModel<String>();
     private Queue<Vehicle> takenTransport = new ArrayDeque<>();
+    private final static Logger logger = Logger.getLogger(FormDepot.class);
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -37,6 +42,7 @@ public class FormDepot {
                     FormDepot window = new FormDepot();
                     frame.setVisible(true);
                 } catch (Exception e) {
+                	logger.log(Level.FATAL, "Неизвестная ошибка при запуске программы");
                     e.printStackTrace();
                 }
             }
@@ -81,8 +87,10 @@ public class FormDepot {
         btnAddDepot.setContentAreaFilled(false);
         btnAddDepot.addActionListener(e -> {
             if (textFieldDepots.getText().equals("")) {
-                JOptionPane.showMessageDialog(frame, "Введите название автовокзала", "Ошибка", JOptionPane.INFORMATION_MESSAGE);
+            	logger.log(Level.WARN, "При добавлении депо отсутствовало название");
+                JOptionPane.showMessageDialog(frame, "Введите название депо", "Ошибка", JOptionPane.INFORMATION_MESSAGE);
             } else {
+            	logger.log(Level.INFO, "Добавили депо " + textFieldDepots.getText());
                 depotCollection.addDepot(textFieldDepots.getText());
                 ReloadLevels();
             }
@@ -105,7 +113,8 @@ public class FormDepot {
         btnDeleteDepot.setContentAreaFilled(false);
         btnDeleteDepot.addActionListener(e -> {
             if (listDepot.getSelectedIndex() > -1) {
-                if (JOptionPane.showConfirmDialog(frame, "Удалить автовокзал " + listDepotModel.get(listDepot.getSelectedIndex()) + "?", "Удаление", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                if (JOptionPane.showConfirmDialog(frame, "Удалить депо " + listDepotModel.get(listDepot.getSelectedIndex()) + "?", "Удаление", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                	logger.log(Level.INFO, "Удалили депо " + listDepotModel.get(listDepot.getSelectedIndex()));
                     depotCollection.delDepot(listDepotModel.get(listDepot.getSelectedIndex()));
                     ReloadLevels();
                 }
@@ -157,11 +166,20 @@ public class FormDepot {
                         Vehicle train = depotCollection.get(listDepotModel.get(listDepot.getSelectedIndex())).operatorSub(Integer.parseInt(textFieldNumberPlace.getText()));
                         if (train != null) {
                             takenTransport.add(train);
+                            logger.log(Level.INFO, "Изъят поезд " + train + " с места " + textFieldNumberPlace.getText());
                         }
                         panelDepot.repaint();
                     }
+                } catch (DepotNotFoundException ex)
+                {
+                	logger.log(Level.WARN, "Поезд по месту " + textFieldNumberPlace.getText() + " не найден");
+                	JOptionPane.showMessageDialog(null, "Поезд не найден", "Warning!", JOptionPane.WARNING_MESSAGE);
                 } catch (NumberFormatException ex) {
+                	logger.log(Level.WARN, "Неверный формат номера поезда");
                     JOptionPane.showMessageDialog(null, "Некорректный запрос", "Warning!", JOptionPane.WARNING_MESSAGE);
+                } catch (Exception ex) {
+                	logger.log(Level.ERROR, "Возникла неизвестная ошибка");
+                	JOptionPane.showMessageDialog(null, "Неизвестная ошибка", "Warning!", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -174,9 +192,11 @@ public class FormDepot {
         btnLastTransport.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (takenTransport.size() == 0) {
+                	logger.log(Level.WARN, "Пытались забрать поезд из пустой очереди");
                 	JOptionPane.showMessageDialog(null, "Очередь на выезд пуста", "Warning!", JOptionPane.WARNING_MESSAGE);
                     return;
                 }
+                logger.log(Level.INFO, "Забрали поезд " + takenTransport.poll() + " из очереди");
                 FormMonorail form = new FormMonorail();
                 form.SetMonorail(takenTransport.poll());
                 frame.setEnabled(false);
@@ -200,11 +220,15 @@ public class FormDepot {
                 if (openFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     String path = openFile.getSelectedFile().getPath();
                     try {
-                        if (depotCollection.SaveData(path)) {
-                            JOptionPane.showMessageDialog(null, "Сохранение успешно завершено", "Результат", JOptionPane.WARNING_MESSAGE);
-                        } 
+                    	depotCollection.SaveData(path);
+                    	logger.log(Level.INFO, "Сохранено в файл " + path);
+                        JOptionPane.showMessageDialog(null, "Сохранение успешно завершено", "Результат", JOptionPane.WARNING_MESSAGE);
                     } catch (IOException e) {
-                    	JOptionPane.showMessageDialog(null, "Не удалось сохранить", "Результат", JOptionPane.WARNING_MESSAGE);
+                    	logger.log(Level.WARN, "Возникла неизвестная ошибка при сохранении");
+                    	JOptionPane.showMessageDialog(null, "Не удалось сохранить", "Warning!", JOptionPane.WARNING_MESSAGE);
+                    } catch (Exception e) {
+                    	logger.log(Level.ERROR, "Возникла неизвестная ошибка");
+                    	JOptionPane.showMessageDialog(null, "Не удалось сохранить", "Warning!", JOptionPane.WARNING_MESSAGE);
                     }
                 }
             }
@@ -218,12 +242,19 @@ public class FormDepot {
                 if (openFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     String path = openFile.getSelectedFile().getPath();
                     try {
-                        if (depotCollection.LoadData(path)) {
-                            ReloadLevels();
-                            JOptionPane.showMessageDialog(null, "Загрузка успешно завершена", "Результат", JOptionPane.WARNING_MESSAGE);
-                        } 
-                    } catch (IOException e) {
-                    	JOptionPane.showMessageDialog(null, "Не удалось загрузить", "Результат", JOptionPane.WARNING_MESSAGE);
+                    	depotCollection.LoadData(path);
+                        ReloadLevels();
+                        logger.log(Level.INFO, "Загрузили файл " + path);
+                        JOptionPane.showMessageDialog(null, "Загрузка успешно завершена", "Результат", JOptionPane.WARNING_MESSAGE);
+                    } catch (DepotOverflowException e) {
+                    	logger.log(Level.WARN, "Не удалось загрузить поезд в депо");
+                    	JOptionPane.showMessageDialog(null, "Свободные места отсутсвуют", "Warning!", JOptionPane.WARNING_MESSAGE);
+					} catch (IOException e) {
+                    	logger.log(Level.WARN, "Возникла неизвестная ошибка при загрузке");
+                    	JOptionPane.showMessageDialog(null, "Не удалось загрузить", "Warning!", JOptionPane.WARNING_MESSAGE);
+                    } catch (Exception e) {
+                    	logger.log(Level.ERROR, "Возникла неизвестная ошибка");
+                    	JOptionPane.showMessageDialog(null, "Не удалось загрузить", "Warning!", JOptionPane.WARNING_MESSAGE);
                     }
                 }
             }
@@ -238,12 +269,16 @@ public class FormDepot {
                 if (openFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     String path = openFile.getSelectedFile().getPath();
                     try {
-                        if (depotCollection.SaveOnlyOneData(path, listDepotModel.get(listDepot.getSelectedIndex()))) {
-                            JOptionPane.showMessageDialog(null, "Сохранение успешно завершено", "Результат", JOptionPane.WARNING_MESSAGE);
-                        } 
+                    	depotCollection.SaveOnlyOneData(path, listDepotModel.get(listDepot.getSelectedIndex()));
+                    	logger.log(Level.INFO, "Сохранено в файл " + path);
+                        JOptionPane.showMessageDialog(null, "Сохранение успешно завершено", "Результат", JOptionPane.WARNING_MESSAGE);
                     } catch (IOException e) {
+                    	logger.log(Level.WARN, "Возникла неизвестная ошибка при сохранении");
                     	JOptionPane.showMessageDialog(null, "Не удалось сохранить", "Результат", JOptionPane.WARNING_MESSAGE);
-                    }
+                    } catch (Exception e) {
+                    	logger.log(Level.ERROR, "Возникла неизвестная ошибка");
+                    	JOptionPane.showMessageDialog(null, "Не удалось сохранить", "Warning!", JOptionPane.WARNING_MESSAGE);
+                    } 
                 }
             }
         });
@@ -257,12 +292,19 @@ public class FormDepot {
                 if (openFile.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                     String path = openFile.getSelectedFile().getPath();
                     try {
-                        if (depotCollection.LoadOnlyOneData(path)) {
-                            ReloadLevels();
-                            JOptionPane.showMessageDialog(null, "Загрузка успешно завершена", "Результат", JOptionPane.WARNING_MESSAGE);
-                        } 
-                    } catch (IOException e) {
+                    	depotCollection.LoadOnlyOneData(path);
+                        ReloadLevels();
+                        logger.log(Level.INFO, "Загрузили файл " + path);
+                        JOptionPane.showMessageDialog(null, "Загрузка успешно завершена", "Результат", JOptionPane.WARNING_MESSAGE);
+                    } catch (DepotOverflowException e) {
+                    	logger.log(Level.WARN, "Не удалось загрузить поезд в депо");
+                    	JOptionPane.showMessageDialog(null, "Свободные места отсутсвуют", "Warning!", JOptionPane.WARNING_MESSAGE);
+					} catch (IOException e) {
+                    	logger.log(Level.WARN, "Возникла неизвестная ошибка при загрузке");
                     	JOptionPane.showMessageDialog(null, "Не удалось загрузить", "Результат", JOptionPane.WARNING_MESSAGE);
+                    } catch (Exception e) {
+                    	logger.log(Level.ERROR, "Возникла неизвестная ошибка");
+                    	JOptionPane.showMessageDialog(null, "Не удалось загрузить", "Warning!", JOptionPane.WARNING_MESSAGE);
                     }
                 }
             }
@@ -288,12 +330,21 @@ public class FormDepot {
     }
     
     Expression AddTrain = (train) -> {
-        if (train != null && listDepot.getSelectedIndex() > -1) {
-            if (depotCollection.get(listDepotModel.get(listDepot.getSelectedIndex())).operatorAdd(train)) {
-            	panelDepot.repaint();
-            }
-            else {
-            	JOptionPane.showMessageDialog(null, "Парковка переполнена", "Warning!", JOptionPane.WARNING_MESSAGE);
+        if (train != null && listDepot.getSelectedIndex() > -1) {          
+            try {
+            	if (depotCollection.get(listDepotModel.get(listDepot.getSelectedIndex())).operatorAdd(train)) {
+                	logger.log(Level.INFO, "Добавлен поезд " + train);
+                	panelDepot.repaint();
+                } else {
+                	logger.log(Level.WARN, "Поезд " + train + " не удалось добавить в депо");
+                	JOptionPane.showMessageDialog(null, "Поезд не удалось поставить", "Warning!", JOptionPane.WARNING_MESSAGE);
+                }
+            } catch (DepotOverflowException ex) {
+            	logger.log(Level.WARN, "Произошло переполнение депо");
+            	JOptionPane.showMessageDialog(null, "Переполнение", "Warning!", JOptionPane.WARNING_MESSAGE);
+            } catch (Exception ex) {
+                logger.log(Level.ERROR, "Возникла неизвестная ошибка");
+                JOptionPane.showMessageDialog(null, "Неизвестная ошибка", "Warning!", JOptionPane.WARNING_MESSAGE);
             }
         }
     };

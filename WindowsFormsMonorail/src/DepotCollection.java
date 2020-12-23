@@ -53,7 +53,7 @@ public class DepotCollection {
         return null;
     }
 
-    public boolean SaveData(String fileName) throws IOException {
+    public void SaveData(String fileName) throws IOException {
     	
     	File file = new File(fileName);
         if (file.exists()) {
@@ -69,7 +69,7 @@ public class DepotCollection {
 				fw.write("Depot" + separator + level + "\n");
 
 				if(depotStages.isEmpty()) {
-					return false;
+					return;
 				}
 				
                 ITransport train;
@@ -88,11 +88,9 @@ public class DepotCollection {
                 }
 			}
 		}
-		
-		return true;
     }
     
-    public boolean SaveOnlyOneData(String fileName, String depotName) throws IOException {
+    public void SaveOnlyOneData(String fileName, String depotName) throws IOException {
     	
     	File file = new File(fileName);
         if (file.exists()) {
@@ -105,7 +103,7 @@ public class DepotCollection {
 			fw.write("Depot" + separator + depotName + "\n");
 			
 			if(depotStages.isEmpty()) {
-				return false;
+				return;
 			}
 				
 			ITransport train;	
@@ -123,15 +121,13 @@ public class DepotCollection {
                 }
             }
 		}
-		
-		return true;
     }
     
-    public boolean LoadData(String fileName) throws FileNotFoundException, IOException {
+    public void LoadData(String fileName) throws Exception {
 
         File file = new File(fileName);
         if (!file.exists()) {
-            return false;
+        	throw new FileNotFoundException();
         }
 
         try (FileReader fr = new FileReader(fileName)) {
@@ -152,7 +148,7 @@ public class DepotCollection {
                     continue;
                     
                 } else if(flagForStart) {
-                    return false;
+                	throw new Exception("Неверный формат файла");
                 }
                 
                 Vehicle train = null;
@@ -176,18 +172,17 @@ public class DepotCollection {
                 boolean result = depotStages.get(key).operatorAdd(train);
                 
                 if (!result) {
-                    return false;
+                	throw new Exception("Не удалось загрузить поезд в депо");
                 }
             }
         }
-        return true;
     }
     
-    public boolean LoadOnlyOneData(String fileName) throws FileNotFoundException, IOException {
+    public void LoadOnlyOneData(String fileName) throws Exception {
 
         File file = new File(fileName);
         if (!file.exists()) {
-            return false;
+        	throw new FileNotFoundException();
         }
 
         try (FileReader fr = new FileReader(fileName)) {
@@ -208,7 +203,7 @@ public class DepotCollection {
                     continue;
                     
                 } else if(flagForStart) {
-                    return false;
+                	throw new Exception("Неверный формат файла");
                 }
                 
                 Vehicle train = null;
@@ -243,10 +238,9 @@ public class DepotCollection {
                 boolean result = depotStages.get(key).operatorAdd(train);
                 
                 if (!result) {
-                    return false;
+                	throw new Exception("Не удалось загрузить поезд в депо");
                 }
             }
         }
-        return true;
     }
 }
