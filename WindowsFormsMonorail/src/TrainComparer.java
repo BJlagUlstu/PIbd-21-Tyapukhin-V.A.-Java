@@ -4,6 +4,14 @@ public class TrainComparer implements Comparator<Vehicle> {
 
 	@Override
 	public int compare(Vehicle x, Vehicle y) {
+            if (x instanceof Monorail && y instanceof Train)
+            {
+                return -1;
+            }
+            if (x instanceof Train && y instanceof Monorail)
+            {
+                return 1;
+            }
 	    if (x instanceof Monorail && y instanceof Monorail) {
 	        return ComparerMonorail((Monorail) x, (Monorail) y);
 	    }
