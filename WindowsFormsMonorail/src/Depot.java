@@ -1,5 +1,6 @@
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Depot <T extends ITransport, D extends IDoor> {
@@ -25,10 +26,12 @@ public class Depot <T extends ITransport, D extends IDoor> {
         _places = new ArrayList<T>();
     }
 
-    public boolean operatorAdd(T train) throws DepotOverflowException {
+    public boolean operatorAdd(T train) throws DepotOverflowException, DepotAlreadyHaveException {
     	if (_places.size() >= _maxCount)
     		throw new DepotOverflowException();
-
+    	
+    	if (_places.contains(train))
+    		throw new DepotAlreadyHaveException();
     	
         _places.add(train);
         int x = (_places.size() - 1) / (pictureHeight / _placeSizeHeight);
@@ -70,12 +73,15 @@ public class Depot <T extends ITransport, D extends IDoor> {
         return _places.get(index);
     }
     
+    public List<T> getPlace() {
+        return  _places;
+    }
+    
     public void Draw(Graphics g) {
         DrawMarking(g);
-        for (T train : _places) {
-            if (train != null) {
-            	train.DrawTransport(g);
-            }
+        for (int i = 0; i < _places.size(); ++i) {
+        	_places.get(i).SetPosition(5 + i / 5 * _placeSizeWidth + 5, i % 5 * _placeSizeHeight + 30, pictureWidth, pictureHeight);
+            _places.get(i).DrawTransport(g);
         }
     }
 
@@ -98,5 +104,15 @@ public class Depot <T extends ITransport, D extends IDoor> {
     
     public void myClear() {
     	_places.clear();
+    }
+    
+	public void Sort() {
+    	_places.sort((Comparator<? super T>) new TrainComparer());
+    }
+    
+    public void info() {
+    	for(ITransport train: _places) {
+    		System.out.println(train.toString());
+    	}
     }
 }

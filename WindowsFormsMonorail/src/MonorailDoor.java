@@ -98,4 +98,27 @@ public class MonorailDoor implements IDoor {
 	public String toString() {
 		return "Usual";
 	}
+	
+	public boolean Equals(IDoor other) {
+	    MonorailDoor currentDoor = (MonorailDoor)(other);
+		if (other == null) {
+	        return false;
+	    }
+	    if (door != (currentDoor).door) {
+	        return false;
+	    }
+	    return true;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+	    if (obj == null) {
+	        return false;
+	    }
+	    if (!(obj.getClass() == getClass())) {
+	        return false;
+	    } else {
+	        return Equals((IDoor) obj);
+	    }
+	}
 }

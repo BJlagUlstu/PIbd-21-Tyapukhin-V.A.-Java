@@ -147,4 +147,50 @@ public class Monorail extends Train {
     public String toString() {
     	return super.toString() + separator + DopColor.getRed() + "," + DopColor.getGreen() + "," + DopColor.getBlue() + separator + SportLine + separator + Headlights + separator + BottomMonorail + separator + numberOfDoor + separator + door;
     }
+    
+    public boolean Equals(Monorail other) {
+        if (other == null) {
+            return false;
+        }
+        if (getClass() != other.getClass()) {
+            return false;
+        }
+        if (MaxSpeed != other.MaxSpeed) {
+            return false;
+        }
+        if (Weight != other.Weight) {
+            return false;
+        }
+        if (MainColor != other.MainColor) {
+            return false;
+        }
+        if (DopColor != other.DopColor) {
+            return false;
+        }
+        if (SportLine != other.SportLine) {
+            return false;
+        }
+        if (Headlights != other.Headlights) {
+            return false;
+        }
+        if (BottomMonorail != other.BottomMonorail) {
+            return false;
+        }
+        if (!door.equals(other.door)) {
+            return false;
+        }
+        return true;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof Monorail)) {
+        	return false;
+        } else {
+        	return Equals((Monorail) obj);
+        }
+    }
 }

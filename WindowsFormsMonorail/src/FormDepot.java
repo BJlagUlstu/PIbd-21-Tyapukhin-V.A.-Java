@@ -134,11 +134,11 @@ public class FormDepot {
             	formTrainConfig.setVisible();
             }
         });
-        buttonParkTrain.setBounds(1076, 350, 130, 25);
+        buttonParkTrain.setBounds(1076, 330, 130, 25);
         frame.getContentPane().add(buttonParkTrain);
 
         JPanel groupPanelPickUp = new JPanel();
-        groupPanelPickUp.setBounds(1076, 420, 130, 150);
+        groupPanelPickUp.setBounds(1076, 385, 130, 150);
         groupPanelPickUp.setBorder(new LineBorder(new Color(0, 0, 0)));
         frame.getContentPane().add(groupPanelPickUp);
         groupPanelPickUp.setLayout(null);
@@ -203,8 +203,23 @@ public class FormDepot {
                 form.setVisible();
             }
         });
-        btnLastTransport.setBounds(1076, 580, 130, 25);
+        btnLastTransport.setBounds(1076, 545, 130, 25);
         frame.getContentPane().add(btnLastTransport);
+        
+        JButton btnSort = new JButton("Sort transport");
+        btnSort.setFocusPainted(false);
+        btnSort.setContentAreaFilled(false);
+        btnSort.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	if (listDepot.getSelectedIndex() > -1) {
+            	    depotCollection.get(listDepotModel.get(listDepot.getSelectedIndex())).Sort();
+            	    panelDepot.repaint();
+            	    logger.log(Level.INFO, "Сортировка уровней");
+            	}
+            }
+        });
+        btnSort.setBounds(1076, 585, 130, 25);
+        frame.getContentPane().add(btnSort);
         
         JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -339,6 +354,9 @@ public class FormDepot {
                 	logger.log(Level.WARN, "Поезд " + train + " не удалось добавить в депо");
                 	JOptionPane.showMessageDialog(null, "Поезд не удалось поставить", "Warning!", JOptionPane.WARNING_MESSAGE);
                 }
+            } catch (DepotAlreadyHaveException ex) {
+            	logger.log(Level.WARN, "Добавление поезда, который уже есть в депо");
+            	JOptionPane.showMessageDialog(null, "Такой поезд уже есть в депо", "Warning!", JOptionPane.WARNING_MESSAGE);
             } catch (DepotOverflowException ex) {
             	logger.log(Level.WARN, "Произошло переполнение депо");
             	JOptionPane.showMessageDialog(null, "Переполнение", "Warning!", JOptionPane.WARNING_MESSAGE);

@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 
 public class DepotCollection {
@@ -71,13 +72,11 @@ public class DepotCollection {
 				if(depotStages.isEmpty()) {
 					return;
 				}
-				
-                ITransport train;
 
-                for (int i = 0; (train = depotStages.get(level).get(i)) != null; i++) {
-                	
+				List<Vehicle> currentDepot = depotStages.get(level).getPlace();
+                
+                for (ITransport train : currentDepot) {
                     if (train != null) {
-                    	
                     	if(train instanceof Monorail) {
                     		fw.write("Monorail" + separator);
                         } else if(train instanceof Train) {
@@ -105,13 +104,11 @@ public class DepotCollection {
 			if(depotStages.isEmpty()) {
 				return;
 			}
-				
-			ITransport train;	
-			
-            for (int i = 0; (train = depotStages.get(depotName).get(i)) != null; i++) {
-            	
+            
+			List<Vehicle> currentDepot = depotStages.get(depotName).getPlace();
+            
+            for (ITransport train : currentDepot) {
                 if (train != null) {
-                	
                 	if(train instanceof Monorail) {
                 		fw.write("Monorail" + separator);
                     } else if(train instanceof Train) {
